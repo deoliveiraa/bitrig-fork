@@ -71,3 +71,10 @@ The
 .Nm
 driver was written by
 .An Andre de Oliveira .
+.Sh CAVEATS
+Most sensors exposed by
+.Nm
+are only available if an UPS battery is present.
+If the battery is not detected, only
+.Dq ShutdownImminent
+is available.
