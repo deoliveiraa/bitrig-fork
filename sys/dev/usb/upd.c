@@ -322,9 +322,8 @@ upd_update_sensors(struct upd_softc *sc, uint8_t *buf, unsigned int len,
     int repid)
 {
 	struct upd_sensor	*sensor;
-	ulong			hdata, batpres;
-	ulong 			adjust;
-	int			i;
+	ulong			 adjust, data;
+	int			 i, batpres;
 
 	sensor = upd_lookup_sensor(sc, HUP_BATTERY, HUB_BATTERY_PRESENT);
 	batpres = sensor ? sensor->ksensor.value : -1;
@@ -334,16 +333,16 @@ upd_update_sensors(struct upd_softc *sc, uint8_t *buf, unsigned int len,
 		if (!(sensor->hitem.report_ID == repid && sensor->attached))
 			continue;
 
-		/* invalidate battery dependent sensors */
+		sensor->ksensor.flags &= ~SENSOR_FINVALID;
+		/*
+		 * invalidate data of battery dependent sensors exception to
+		 * the battery presence sensor itself
+		 */
 		if (HID_GET_USAGE_PAGE(sensor->hitem.usage) == HUP_BATTERY &&
-		    batpres <= 0) {
-			/* exception to the battery sensor itself */
-			if (HID_GET_USAGE(sensor->hitem.usage) !=
-			    HUB_BATTERY_PRESENT) {
-				sensor->ksensor.status = SENSOR_S_UNKNOWN;
-				sensor->ksensor.flags |= SENSOR_FINVALID;
-				continue;
-			}
+		    HID_GET_USAGE(sensor->hitem.usage) != HUB_BATTERY_PRESENT &&
+		    !batpres) {
+			sensor->ksensor.status = SENSOR_S_UNKNOWN;
+			continue;
 		}
 
 		switch (HID_GET_USAGE(sensor->hitem.usage)) {
@@ -353,19 +352,21 @@ upd_update_sensors(struct upd_softc *sc, uint8_t *buf, unsigned int len,
 		case HUB_FULLCHARGE_CAPACITY:
 			adjust = 1000; /* scale adjust */
 			break;
+		case HUB_BATTERY_PRESENT:
+			data = (data == 0) ? data : 1;
+			break;
 		default:
 			adjust = 1; /* no scale adjust */
 			break;
 		}
 
 		/* XXX first byte which is the report id */
-		hdata = hid_get_data(buf + 1, len, &sensor->hitem.loc);
+		data = hid_get_data(buf + 1, len, &sensor->hitem.loc);
 
-		sensor->ksensor.value = hdata * adjust;
+		sensor->ksensor.value = data * adjust;
 		sensor->ksensor.status = SENSOR_S_OK;
-		sensor->ksensor.flags &= ~SENSOR_FINVALID;
 		DPRINTF(("%s: hidget data: %d\n",
-		    sc->sc_sensordev.xname, hdata));
+		    sc->sc_sensordev.xname, data));
 	}
 }
 
