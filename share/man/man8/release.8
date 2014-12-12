@@ -57,68 +57,62 @@ should always start from a known set of
 .Em coherent
 sources.
 The easiest way to ensure that the sources are complete and coherent
-is to check them out using the
-.Tn CVS
+is to check them out using the release
+.Tn git
 tag the
 .Br
 developers add to the repository prior to making a release.
-There are two tags, one which identifies the release as it exists on the
-.Tn CD-ROM
-and another which identifies the
+There is a tag, which identifies the release as it exists on the
+.Tn CD-ROM (ISO image)
+and a
 .Em stable
 branch.
 The
 .Em stable
 branch, starting with
-.Ox 2.7 ,
+.Br 1.0 ,
 contains the patches described in
-.Lk http://www.openbsd.org/errata.html .
-The tags are of the form:
-.Bl -tag -width OPENBSD_x_y_BASE
-.It Va OPENBSD_x_y_BASE
+.Lk http://www.bitrig.org/errata.html .
+The tags and branches are of the form:
+.Bl -tag -width release/X.Y
+.It Va release/X.Y
 This tag marks the source as it exists on the release
-.Tn CD-ROM
+.Tn CD-ROM (ISO image)
 where
 .Ar x
 is the major release number and
 .Ar y
 is the minor release number.
-.It Va OPENBSD_x_y
-This tag is a moving target.
-It marks the sources that belong to the stable branch.
+The branches are of the form:
+.It Va stable/X.Y
+This branch is a moving target.
+It holds the sources that belong to the stable branch.
 This branch
 .Em only
 contains errata, no new features.
 .El
 .Pp
-To update your sources to the versions identified by one of the above
-tags use the commands:
+To update your sources to the version identified by the above tag use the
+commands:
 .Bd -literal -offset indent
-$ cd /usr/src && cvs up -r TAG -Pd
-$ cd XSRCDIR && cvs up -r TAG -Pd
-$ cd PORTSPATH && cvs up -r TAG -Pd
+$ cd /usr/src && git fetch -t && git checkout release/RELEASE -b \\
+release/RELEASE
+$ cd /usr/ports && git fetch -t && git checkout release/RELEASE -b \\
+release/RELEASE
 .Ed
 .Pp
-Replace
-.Va XSRCDIR
-with the path to your X Window System sources.
-Replace
-.Va PORTSPATH
-with the path to your ports tree sources, typically
-.Pa /usr/ports .
-The above commands assume an existing source tree.
+To retrieve a branch with the version identified by the above stable branch use
+the commands:
+.Bd -literal -offset indent
+$ cd /usr/src && git checkout --track origin/stable/RELEASE
+$ cd /usr/ports && git checkout --track origin/stable/RELEASE
+.Ed
 .Pp
 See
-.Lk http://www.openbsd.org/anoncvs.html
-for instructions on fetching the sources for the first time.
-.Pp
-.Sy Warning :
-.Tn CVS
-tags are
-.Sq sticky .
-See
-.Xr cvs 1
-for more information.
+.Lk http://www.bitrig.org/sources.html
+for instructions on fetching
+.Br
+sources for the first time.
 .Ss 2. Build and install a new kernel
 For safety, you should always build and install a new kernel before
 building the programs that will use the kernel.
