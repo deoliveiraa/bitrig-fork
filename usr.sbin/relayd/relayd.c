@@ -760,18 +760,8 @@ kv_purge(struct kvtree *keys)
 void
 kv_free(struct kv *kv)
 {
-	if (kv->kv_type == KEY_TYPE_NONE)
-		return;
-	if (kv->kv_key != NULL) {
-		free(kv->kv_key);
-	}
-	kv->kv_key = NULL;
-	if (kv->kv_value != NULL) {
-		free(kv->kv_value);
-	}
-	kv->kv_value = NULL;
-	kv->kv_matchtree = NULL;
-	kv->kv_match = NULL;
+	free(kv->kv_key);
+	free(kv->kv_value);
 	memset(kv, 0, sizeof(*kv));
 }
 
@@ -868,7 +858,7 @@ rule_add(struct protocol *proto, struct relay_rule *rule, const char *rulefile)
 	int			 ret = -1;
 	u_int			 i;
 
-	for (i = 0; i < KEY_TYPE_MAX; i++) {
+	for (i = 1; i < KEY_TYPE_MAX; i++) {
 		kv = &rule->rule_kv[i];
 		if (kv->kv_type != i)
 			continue;
@@ -918,7 +908,7 @@ rule_add(struct protocol *proto, struct relay_rule *rule, const char *rulefile)
 		if ((r = rule_inherit(rule)) == NULL)
 			goto fail;
 
-		for (i = 0; i < KEY_TYPE_MAX; i++) {
+		for (i = 1; i < KEY_TYPE_MAX; i++) {
 			kv = &r->rule_kv[i];
 			if (kv->kv_type != i)
 				continue;
@@ -955,7 +945,7 @@ rule_inherit(struct relay_rule *rule)
 		return (NULL);
 	memcpy(r, rule, sizeof(*r));
 
-	for (i = 0; i < KEY_TYPE_MAX; i++) {
+	for (i = 1; i < KEY_TYPE_MAX; i++) {
 		kv = &rule->rule_kv[i];
 		if (kv->kv_type != i)
 			continue;
@@ -980,7 +970,7 @@ rule_free(struct relay_rule *rule)
 {
 	u_int	i;
 
-	for (i = 0; i < KEY_TYPE_MAX; i++)
+	for (i = 1; i < KEY_TYPE_MAX; i++)
 		kv_free(&rule->rule_kv[i]);
 	if (rule->rule_label > 0)
 		label_unref(rule->rule_label);
