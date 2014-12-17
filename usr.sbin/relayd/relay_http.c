@@ -134,27 +134,11 @@ relay_httpdesc_init(struct ctl_relay_event *cre)
 void
 relay_httpdesc_free(struct http_descriptor *desc)
 {
-	if (desc->http_path != NULL) {
-		free(desc->http_path);
-		desc->http_path = NULL;
-	}
-	if (desc->http_query != NULL) {
-		free(desc->http_query);
-		desc->http_query = NULL;
-	}
-	if (desc->http_version != NULL) {
-		free(desc->http_version);
-		desc->http_version = NULL;
-	}
-	if (desc->query_key != NULL) {
-		free(desc->query_key);
-		desc->query_key = NULL;
-	}
-	if (desc->query_val != NULL) {
-		free(desc->query_val);
-		desc->query_val = NULL;
-	}
+	kv_free(&desc->http_pathquery);
+	kv_free(&desc->http_matchquery);
 	kv_purge(&desc->http_headers);
+	free(desc->http_version);
+	memset(desc, 0, sizeof(*desc));
 }
 
 void
