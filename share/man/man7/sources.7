@@ -222,20 +222,27 @@ Create directories that might be missing:
 .Pp
 .Dl # cd /usr/src/etc && sudo DESTDIR=/ make distrib-dirs
 .Pp
-Begin the build:
+Build the system:
 .Pp
-.Dl # cd /usr/src && make SUDO=sudo build
+.Dl # cd /usr/src && make build
 .Pp
-Update
+When this step is finished, your system is up-to-date and running the newly
+compiled binaries.
+.Pp
+Building
+.Br
+tree does not modify files in
 .Pa /etc ,
-.Pa /var ,
-and
-.Pa /dev/MAKEDEV ,
-either by hand or using
+.Pa /var
+or
+.Pa /dev
+automatically.
+It is up to the administrator to make the necessary modifications there.
+To update files in these directories, you might find useful to use
 .Xr sysmerge 8 .
-.Pp
-At this point your system is up-to-date and running the code that you
-just compiled.
+To update
+.Pa /dev/MAKEDEV ,
+refer to upgrade documentation.
 .Sh SEE ALSO
 .Xr git 1 ,
 .Xr release 8
@@ -250,4 +257,4 @@ This
 .Nm
 document was originally written by
 .An Andre de Oliveira and first appeared in
-.Br 1.0 .
+.Br 1.1 .
