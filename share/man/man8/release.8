@@ -127,21 +127,14 @@ $ make clean && make
 .Pp
 Replace the old kernel and reboot.
 .Ss 3. Build a new system
-Now that you are running your new kernel you can build a new system.
-It's safer (but slower) to remove your object directories and re-create
-them before the build.
-The steps are:
-.Pp
-Move all your existing object files out of the way and then remove
-them in the background:
+Clean your
+.Ns Pa /usr/obj
+directory and rebuild symbolic links
 .Bd -literal -offset indent
-$ cd /usr/obj && mkdir -p .old && sudo mv * .old && \e
-	sudo rm -rf .old &
+# rm -rf /usr/obj/*
+# cd /usr/src
+# make obj
 .Ed
-.Pp
-Re-build your obj directories:
-.Pp
-.Dl $ cd /usr/src && make obj
 .Pp
 Create directories that might be missing:
 .Pp
@@ -150,14 +143,6 @@ Create directories that might be missing:
 Begin the build:
 .Pp
 .Dl $ cd /usr/src && make SUDO=sudo build
-.Pp
-Update
-.Pa /etc ,
-.Pa /var ,
-and
-.Pa /dev/MAKEDEV ,
-either by hand or using
-.Xr sysmerge 8 .
 .Pp
 At this point your system is up-to-date and running the code that you
 are going to make into a release.
@@ -292,6 +277,7 @@ for installation, either individually or in bulk.
 This is described in
 .Xr ports 7 .
 .Sh SEE ALSO
+.Xr sources 7 ,
 .Xr git 1 ,
 .Xr pkg_add 1 ,
 .Xr ports 7 ,
@@ -299,4 +285,6 @@ This is described in
 .Xr sysmerge 8
 .Sh HISTORY
 This document first appeared in
-.Ox 2.8 .
+.Ox 2.8 ,
+then has been updated for
+.Br 1.1 .
