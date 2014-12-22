@@ -105,10 +105,6 @@ tags and branches, as for more instructions on fetching
 .Br
 sources for the first time.
 .Ss 2. Build and install a new kernel
-For safety, you should always build and install a new kernel before
-building the programs that will use the kernel.
-This ensures that any new system calls, for example, will be present
-when needed.
 To build a kernel the steps are:
 .Pp
 Change the current working directory.
@@ -119,20 +115,6 @@ is the architecture of your machine, e.g.\&
 .Dl $ cd /usr/src/sys/arch/${ARCH}/conf
 .Pp
 Edit the kernel configuration file.
-.Va ${NAME}
-is your kernel configuration file.
-You should
-.Em not
-edit
-.Li GENERIC ;
-create your own kernel configuration if you need to make modifications.
-If using
-.Li GENERIC
-you can skip this step.
-And yes, you may use
-.Xr vi 1 ,
-.Xr mg 1 ,
-or any other editor you choose.
 .Pp
 .Dl $ vi ${NAME}
 .Pp
@@ -143,23 +125,7 @@ $ cd ../compile/${NAME}
 $ make clean && make
 .Ed
 .Pp
-(In this instance
-.Li "make clean"
-is your friend.)
-.Pp
 Replace the old kernel and reboot.
-The current kernel is copied to
-.Pa /obsd
-and the new kernel to
-.Pa /bsd .
-.Bd -literal -offset indent
-$ su
-# make install
-# shutdown -r now
-.Ed
-.Pp
-If the system does not come up you can boot using
-.Pa /obsd .
 .Ss 3. Build a new system
 Now that you are running your new kernel you can build a new system.
 It's safer (but slower) to remove your object directories and re-create

@@ -109,7 +109,7 @@ For information on how to build a signed release distribution, see
 .Pp
 For information on source code style for submitting diffs, refer to
 .Xr style 9 .
-.Ss 2. Fetching the source code
+.Ss 1. Fetching the source code
 .Br
 does not provides source tarsets (e.g. src.tar.gz, sys.tar.gz), which can be
 used to "pre-load" the source tree,
@@ -158,7 +158,12 @@ performed for "xenocara" and "ports".
 .Pp
 At this point a usable source tree exists at
 .Ns Pa /usr/src.
-.Ss 3 Building a new kernel
+.Ss 2. Building a new kernel
+For safety, you should always build and install a new kernel before
+building the programs that will use the kernel.
+This ensures that any new system calls, for example, will be present
+when needed.
+.Pp
 Change the current working directory to the target architecture, e.g.\&
 .Li amd64 .
 .Pp
@@ -197,7 +202,7 @@ $ su
 .Pp
 If the system does not come up you can boot using
 .Pa /obsd .
-.Ss 4 Building "userland" ("make build")
+.Ss 3. Building "userland" ("make build")
 After booting the new kernel you can build a new system.
 It's safer (but slower) to remove your object directories and re-create
 them before the build.
