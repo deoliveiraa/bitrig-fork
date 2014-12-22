@@ -17,6 +17,24 @@
 .Br
 sources
 .Sh DESCRIPTION
+All
+.Br
+sources are managed using GIT stored at open, well-known and public
+repositories on github, for a complete list refer to
+.Lk https://github.com/bitrig .
+.Pp
+Instructions in the following sections assume the below remote source
+repositories are available:
+.Bl -tag -width Ds
+.It The base system repository
+.Lk https://github.com/bitrig/bitrig
+.It The Ports collection repository
+.Lk https://github.com/bitrig/bitrig-ports
+.It The X window system repository
+.Lk https://github.com/bitrig/bitrig-xenocara
+.El
+.Pp
+Each
 .Br
 sources repository is organized in branches and tags as follows:
 .Pp
@@ -74,8 +92,6 @@ sources:
 .Pp
 .Bl -enum -compact -offset indent
 .It
-Bitrig sources repositories.
-.It
 Fetching the source code.
 .It
 Building a new kernel.
@@ -83,8 +99,8 @@ Building a new kernel.
 Building "userland" ("make build").
 .El
 .Pp
-Commands below to be run as a user with write permissions on the source tree
-directory
+It is assumed commands below to be run as a user with write permissions on the
+source tree directory
 .Ns Pa /usr/src
 (e.g. a member of wsrc group).
 .Pp
@@ -93,23 +109,6 @@ For information on how to build a signed release distribution, see
 .Pp
 For information on source code style for submitting diffs, refer to
 .Xr style 9 .
-.Ss 1. Bitrig sources repositories
-All
-.Br
-sources are managed using GIT stored at open, well-known and public
-repositories on github, for a complete list refer to
-.Lk https://github.com/bitrig .
-.Pp
-Instructions in the remaining sections assume the following remote source
-repositories are available:
-.Bl -tag -width Ds
-.It The base system repository
-.Lk https://github.com/bitrig/bitrig
-.It The Ports collection repository
-.Lk https://github.com/bitrig/bitrig-ports
-.It The X window system repository
-.Lk https://github.com/bitrig/bitrig-xenocara
-.El
 .Ss 2. Fetching the source code
 .Br
 does not provides source tarsets (e.g. src.tar.gz, sys.tar.gz), which can be
