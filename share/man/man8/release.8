@@ -41,24 +41,33 @@ Make the third party packages.
 The following sections describe each of the required steps in detail.
 .Pp
 Commands to be run as a user with write permissions on the source and
-ports trees
+xenocara trees
 .Pf ( Ns Pa /usr/src
 and
-.Pa /usr/ports
+.Pa /usr/xenocara
 respectively)
 are preceded by a dollar sign
 .Pq Sq $ .
 Commands that must be run as the superuser are preceded by a hash mark
 .Pq Sq # .
-.Ss 1. Update sources
+.Pp
+It is also assumed an existing source tree at
+.Ns Pa /usr/src
+and
+.Ns Pa /usr/xenocara ,
+for more information on retrieving
+.Br
+sources and details on working with branches and tags, see
+.Xr sources 7 .
+.Ss 1. Update sources .
 A
 .Nm
 should always start from a known set of
 .Em coherent
 sources.
-The easiest way to ensure that the sources are complete and coherent
-is to check them out using the release
-.Tn git
+The easiest way to ensure that the sources are complete and coherent is to
+check them out using the release
+.Tn GIT
 tag the
 .Br
 developers add to the repository prior to making a release.
@@ -71,44 +80,30 @@ The
 branch, starting with
 .Br 1.0 ,
 contains the patches described in
-.Lk https://www.bitrig.org/errata10.html .
-The tags and branches are of the form:
-.Bl -tag -width release/X.Y
-.It Va release/X.Y
-This tag marks the source as it exists in the signed release
-distribution where
-.Ar x
-is the major release number and
-.Ar y
-is the minor release number.
-The branches are of the form:
-.It Va stable/X.Y
-This branch is a moving target.
-It holds the sources that belong to the stable branch.
-This branch
-.Em only
-contains errata, no new features.
-.El
+.Lk http://www.bitrig.org/errata10.html .
 .Pp
-To update your sources to the version identified by the above tag use the
+To checkout your sources to the version identified by an X.Y tag, use the
 commands:
 .Bd -literal -offset indent
-$ cd /usr/src && git fetch -t && git checkout release/RELEASE -b \\
-release/RELEASE
-$ cd /usr/ports && git fetch -t && git checkout release/RELEASE -b \\
-release/RELEASE
+$ cd /usr/src
+$ git pull
+$ git checkout release/X.Y -b release/X.Y
+$ cd /usr/xenocara
+$ git pull
+$ git checkout release/X.Y -b release/X.Y
 .Ed
 .Pp
-To retrieve a branch with the version identified by the above stable branch use
-the commands:
-.Bd -literal -offset indent
-$ cd /usr/src && git checkout --track origin/stable/RELEASE
-$ cd /usr/ports && git checkout --track origin/stable/RELEASE
-.Ed
+Both trees,
+.Br
+system sources and
+Xenocara sources, must be kept in sync, they should be fetched and updated to
+the same release tag or branch.
 .Pp
 See
-.Lk http://www.bitrig.org/sources.html
-for instructions on fetching
+.Xr sources 7
+for further information on
+.Br
+tags and branches, as for more instructions on fetching
 .Br
 sources for the first time.
 .Ss 2. Build and install a new kernel
