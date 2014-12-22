@@ -8,8 +8,6 @@
 .\"	LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
 .\"	FOR A PARTICULAR PURPOSE.
 .\"
-.\" Bitrig uses git(1) to manage sources and at github.com. To fetch the sources for the first time
-.\" it is necessary to clone Bitrig git repository, by
 .Dd $Mdocdate: December 12 2014 $
 .Dt SOURCES 7
 .Os
@@ -17,8 +15,49 @@
 .Nm sources
 .Nd working with
 .Br
-source tree
+sources
 .Sh DESCRIPTION
+.Br
+sources repository is organized in branches and tags as follows:
+.Pp
+.Bl -tag -width master
+.It Va master
+The branch where active development work is done and will turn into the next
+.Em release
+of
+.Br .
+.El
+.Bl -tag -width release/X.Y
+.It Va release/X.Y
+A tag which marks the version of
+.Br
+as it exists in the signed release distribution.
+When a new version of
+.Br is released,
+.Em master
+is tagged and a stable branch is created.
+.El
+.Bl -tag -width stable/X.Y
+.It Va stable/X.Y
+The branch created from a release tag,
+When important fixes (eg. patches considered critical to security and
+reliability) are made to
+.Em master ,
+they are merged into stable branches, no new features.
+.El
+.Pp
+The letters X and Y are the
+major release number
+.Ar (X)
+and the minor release number
+.Ar (Y) .
+For instance,
+.Br
+release 1.0 is tagged as
+.Ar release/1.0
+and the stable branch is
+.Ar stable/1.0 .
+.Pp
 .Br
 uses
 .Xr git 1
@@ -28,59 +67,99 @@ must be present in the system, since it is installed in the first-boot via
 .Xr ports 7
 .Pa ( devel/git ) .
 .Pp
-This document describes how to work on
-.Br sources:
+The remaining of this document is organized as a tutorial to perform the
+following actions on
+.Br
+sources:
 .Pp
 .Bl -enum -compact -offset indent
 .It
-Fetching the appropriate source code.
+Bitrig sources repositories.
+.It
+Fetching the source code.
 .It
 Building a new kernel.
 .It
 Building "userland" ("make build").
 .El
 .Pp
-For information on how to build an ISO image release, see
+Commands below to be run as a user with write permissions on the source tree
+directory
+.Ns Pa /usr/src
+(e.g. a member of wsrc group).
+.Pp
+For information on how to build a signed release distribution, see
 .Xr release 8 .
 .Pp
 For information on source code style for submitting diffs, refer to
 .Xr style 9 .
-.Ss 1. Fetching the appropriate source code
+.Ss 1. Bitrig sources repositories
+All
 .Br
-source is managed using GIT, and
+sources are managed using GIT stored at open, well-known and public
+repositories on github, for a complete list refer to
+.Lk https://github.com/bitrig .
+.Pp
+Instructions in the remaining sections assume the following remote source
+repositories are available:
+.Bl -tag -width Ds
+.It The base system repository
+.Lk https://github.com/bitrig/bitrig
+.It The Ports collection repository
+.Lk https://github.com/bitrig/bitrig-ports
+.It The X window system repository
+.Lk https://github.com/bitrig/bitrig-xenocara
+.El
+.Ss 2. Fetching the source code
+.Br
+does not provides source tarsets (e.g. src.tar.gz, sys.tar.gz), which can be
+used to "pre-load" the source tree,
 .Xr git 1
 is used to pull a copy of the desired source to your local machine for
 compilation.
 .Pp
 To clone the tree, use the following command:
 .Bd -literal -offset indent
-# cd /usr && git clone http://github.com/bitrig/bitrig.git src
+$ cd /usr && git clone http://github.com/bitrig/bitrig.git src
 .Ed
 .Pp
 Once cloned, a full copy of the remote system's source repository can be found
-at /usr/src, that includes release tags, stable branch, master branch (where
-development of stable features are merged onto) and all current development
-branches.
-.Pp
-To checkout the stable branch, use the command:
-.Bd -literal -offset indent
-# cd /usr/src && git checkout stable/RELEASE
-.Ed
-.Pp
+at
+.Ns Pa /usr/src ,
+that includes release tags, stable branch, master branch (where development of
+stable features are merged to) and all current development branches.
+Find below the necessary steps to update the tree at a later time.
+.Bl -tag -width Ds
+.It Following master
 To fetch the most up to date version of the sources in the master branch, use
 the command:
 .Bd -literal -offset indent
-# cd /usr/src && git checkout master && git pull origin master
+$ cd /usr/src
+$ git pull
+$ git checkout master
 .Ed
+.It Following a stable branch
+To checkout a stable branch, use the command:
+.Bd -literal -offset indent
+$ cd /usr/src
+$ git pull
+$ git checkout stable/X.Y
+.Ed
+.It Retrieving a release tag
+To checkout the sources at the time of a release, use the command:
+.Bd -literal -offset indent
+$ cd /usr/src
+$ git pull
+$ git checkout release/X.Y -b release/X.Y
+.Ed
+.El
 .Pp
 While the above only show the system's sources (src) tree, same steps are
-performed for "xenocara" and "ports". All parts of
-.Br
-must be kept in sync, all trees should be fetched and updated to the same
-release tag or branch.
+performed for "xenocara" and "ports".
 .Pp
-At this point a usable source tree exists at /usr/src.
-.Ss 2 Building a new kernel
+At this point a usable source tree exists at
+.Ns Pa /usr/src.
+.Ss 3 Building a new kernel
 Change the current working directory to the target architecture, e.g.\&
 .Li amd64 .
 .Pp
@@ -119,7 +198,7 @@ $ su
 .Pp
 If the system does not come up you can boot using
 .Pa /obsd .
-.Ss 3 Building "userland" ("make build")
+.Ss 4 Building "userland" ("make build")
 After booting the new kernel you can build a new system.
 It's safer (but slower) to remove your object directories and re-create
 them before the build.
